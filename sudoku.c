@@ -5,6 +5,7 @@ void printTable(int table[9][9]);
 void putCell(int *cell, int value);
 void completeLine(int table[9][9], int rowOrColumn, int num);
 void completeSubTable(int table[9][9], int subRow, int subColumn);
+void completeLineWith2Cells(int table[9][9], int rowOrColumn, int num);
 
 // テーブルの1行を出力する
 void printRow(int table[9][9], int rowNum){
@@ -68,6 +69,45 @@ void completeSubTable(int table[9][9], int subRow, int subColumn){
     }
 }
 
+void completeLineWith2Cells(int table[9][9], int rowOrColumn, int num){
+    if (rowOrColumn == 0){
+        int checkEmptyValues[9] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        int valueOfEmptyCells[2] = {-1, -1};
+        int indexOfEmptyCells[2] = {0, 0};
+        int numOfEmptyCells = 0;
+        int counter = 0;
+        for (counter = 0; counter < 9; counter++){
+            if (table[num][counter] == 0){
+                indexOfEmptyCells[numOfEmptyCells] = counter;
+                numOfEmptyCells++;
+            }
+            else{
+                checkEmptyValues[table[num][counter] - 1] = 0;
+            }
+        }
+        /*
+        for (counter = 0; counter < 9; counter++){
+            if (checkEmptyValues[counter] != 0){
+                *valueOfEmptyCells = checkEmptyValues[counter];
+                valueOfEmptyCells++;
+            }
+        }
+        */
+        // check the function
+        printf("checkEmptyValues[9] : %d %d %d %d %d %d %d %d %d \n",
+            checkEmptyValues[0],
+            checkEmptyValues[1],
+            checkEmptyValues[2],
+            checkEmptyValues[3],
+            checkEmptyValues[4],
+            checkEmptyValues[5],
+            checkEmptyValues[6],
+            checkEmptyValues[7],
+            checkEmptyValues[8]
+        );
+    }
+}
+
 int main(int argc, char *argv[]){
     int table[9][9] = {
         {0, 0, 0, 0, 0, 0, 3, 0, 6},
@@ -90,6 +130,8 @@ int main(int argc, char *argv[]){
     completeSubTable(table, 1, 1);
     completeSubTable(table, 2, 1);
     printTable(table);
+
+    completeLineWith2Cells(table, 0, 8);
 
     return 0;
 }
