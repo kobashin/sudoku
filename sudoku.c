@@ -30,7 +30,7 @@ void putCell(int *cell, int value){
     *cell = value;
 }
 
-// 1行or1列に空きセルが一つの時に値を埋める
+// 1行or1列に空きセルが1つの時に値を埋める
 void completeLine(int table[9][9], int rowOrColumn, int num){
     int emptyCells = 0;
     int sumOfLine = 0;
@@ -62,7 +62,7 @@ void completeLine(int table[9][9], int rowOrColumn, int num){
     }
 }
 
-// サブテーブルに空きセルが一つの時に値を埋める
+// サブテーブルに空きセルが1つの時に値を埋める
 void completeSubTable(int table[9][9], int subRow, int subColumn){
     int emptyCells = 0;
     int sumOfSubTable = 0;
@@ -83,6 +83,7 @@ void completeSubTable(int table[9][9], int subRow, int subColumn){
     }
 }
 
+// 1行or1列に空きセルが2つの時に値を埋める
 void completeLineWith2Cells(int table[9][9], int rowOrColumn, int num){
     if (rowOrColumn == 0){
         int checkEmptyValues[9] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -123,6 +124,11 @@ void completeLineWith2Cells(int table[9][9], int rowOrColumn, int num){
         */
 
         printf("valueOfEmptyCells[2] : %d %d\n", valueOfEmptyCells[0], valueOfEmptyCells[1]);
+        printf("indexOfEmptyCells[2] : %d %d\n", indexOfEmptyCells[0], indexOfEmptyCells[1]);
+        printf("\n");
+
+        putCell(&table[num][indexOfEmptyCells[0]], valueOfEmptyCells[0]);
+        putCell(&table[num][indexOfEmptyCells[1]], valueOfEmptyCells[1]);
     }
 }
 
@@ -141,15 +147,17 @@ int main(int argc, char *argv[]){
 
     printTable(table);
 
-    completeLine(table, 0, 3);
-    completeLine(table, 0, 7);
+    completeLine(table, ROW, 3);
+    completeLine(table, ROW, 7);
     printTable(table);
 
     completeSubTable(table, 1, 1);
     completeSubTable(table, 2, 1);
     printTable(table);
 
-    completeLineWith2Cells(table, 0, 8);
+    completeLineWith2Cells(table, ROW, 8);
+
+    printTable(table);
 
     return 0;
 }
