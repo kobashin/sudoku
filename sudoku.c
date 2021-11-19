@@ -1,4 +1,6 @@
 #include <stdio.h>
+#define ROW 0
+#define COLUMN 1
 
 void printRow(int table[9][9], int rowNum);
 void printTable(int table[9][9]);
@@ -30,10 +32,10 @@ void putCell(int *cell, int value){
 
 // 1行or1列に空きセルが一つの時に値を埋める
 void completeLine(int table[9][9], int rowOrColumn, int num){
-    if (rowOrColumn == 0){
-        int emptyCells = 0;
-        int sumOfLine = 0;
-        int indexOfEmptyCell = -1;
+    int emptyCells = 0;
+    int sumOfLine = 0;
+    int indexOfEmptyCell = -1;
+    if (rowOrColumn == ROW){
         for (int column = 0; column < 9; column++){
             if (table[num][column] == 0){
                 emptyCells++;
@@ -44,6 +46,18 @@ void completeLine(int table[9][9], int rowOrColumn, int num){
         if (emptyCells == 1){
             // table[num][indexOfEmptyCell] = 45 - sumOfLine;
             putCell(&table[num][indexOfEmptyCell], 45 - sumOfLine);
+        }
+    } else if(rowOrColumn == COLUMN){
+        for (int row = 0; row < 9; row++){
+            if (table[row][num] == 0){
+                emptyCells++;
+                indexOfEmptyCell = row;
+            }
+            sumOfLine += table[row][num];
+        }
+        if (emptyCells == 1){
+            // table[num][indexOfEmptyCell] = 45 - sumOfLine;
+            putCell(&table[indexOfEmptyCell][num], 45 - sumOfLine);
         }
     }
 }
@@ -85,14 +99,15 @@ void completeLineWith2Cells(int table[9][9], int rowOrColumn, int num){
                 checkEmptyValues[table[num][counter] - 1] = 0;
             }
         }
-        /*
+        
         for (counter = 0; counter < 9; counter++){
             if (checkEmptyValues[counter] != 0){
-                *valueOfEmptyCells = checkEmptyValues[counter];
-                valueOfEmptyCells++;
+                valueOfEmptyCells[numOfEmptyCells - 1] = checkEmptyValues[counter];
+                numOfEmptyCells--;
             }
         }
-        */
+        
+        /*
         // check the function
         printf("checkEmptyValues[9] : %d %d %d %d %d %d %d %d %d \n",
             checkEmptyValues[0],
@@ -105,6 +120,9 @@ void completeLineWith2Cells(int table[9][9], int rowOrColumn, int num){
             checkEmptyValues[7],
             checkEmptyValues[8]
         );
+        */
+
+        printf("valueOfEmptyCells[2] : %d %d\n", valueOfEmptyCells[0], valueOfEmptyCells[1]);
     }
 }
 
