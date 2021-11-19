@@ -13,6 +13,7 @@ void completeSubTable(int table[9][9], int subRow, int subColumn);
 int checkLineValidity(int table[9][9], int rowOrColumn, int lineNum, int num);
 int checkSubtableValidity(int table[9][9], int row, int column, int num);
 void completeLineWith2Cells(int table[9][9], int rowOrColumn, int num);
+int checkTable(int table[9][9]);
 
 // テーブルの1行を出力する
 void printRow(int table[9][9], int rowNum){
@@ -88,6 +89,7 @@ void completeSubTable(int table[9][9], int subRow, int subColumn){
     }
 }
 
+// 特定の行や列に特定の数字を入れることが出来るかをチェックする
 int checkLineValidity(int table[9][9], int rowOrColumn, int lineNum, int num){
     int answer = VALID;
     int counter;
@@ -111,6 +113,7 @@ int checkLineValidity(int table[9][9], int rowOrColumn, int lineNum, int num){
     return answer;
 }
 
+// 特定のサブテーブルに特定の数字を入れることが出来るかをチェックする
 int checkSubtableValidity(int table[9][9], int row, int column, int num){
     int answer = VALID;
     int subrow;
@@ -203,6 +206,69 @@ void completeLineWith2Cells(int table[9][9], int rowOrColumn, int num){
     }
 }
 
+// テーブルに不正な正しい状態になっているかをチェックする
+int checkTable(int table[9][9]){
+    int answer = VALID;
+    int checkEmptyValues[9];
+    int row;
+    int column;
+    int counter;
+
+    for (row = 0; row < 9; row++){
+        for (counter = 0; counter < 9; counter++){
+            checkEmptyValues[counter] = counter + 1;
+        }
+
+        for (column = 0; column < 9; column++){
+            if (table[row][column] != 0){
+                if (checkEmptyValues[table[row][column] - 1] == 0){
+                    answer = INVALID;
+                } else {
+                    checkEmptyValues[table[row][column] - 1] = 0;
+                }
+            }
+        }
+    }
+
+    for (int column = 0; column < 9; column++){
+        for (counter = 0; counter < 9; counter++){
+            checkEmptyValues[counter] = counter + 1;
+        }
+
+        for (row = 0; row < 9; row++){
+            if (table[row][column] != 0){
+                if (checkEmptyValues[table[row][column] - 1] == 0){
+                    answer = INVALID;
+                } else {
+                    checkEmptyValues[table[row][column] - 1] = 0;
+                }
+            }
+        }
+    }
+
+    for (int subrow = 0; subrow < 3; subrow++){
+        for (int subcolumn = 0; subcolumn < 3; subcolumn++){
+            for (counter = 0; counter < 9; counter++){
+                checkEmptyValues[counter] = counter + 1;
+            }
+
+            for (row = subrow * 3; row < subrow * 3 + 3; row++){
+                for (column = subcolumn * 3; column < subcolumn * 3 + 3; column++){
+                    if (table[row][column] != 0){
+                        if (checkEmptyValues[table[row][column] - 1] == 0){
+                            answer = INVALID;
+                        } else {
+                            checkEmptyValues[table[row][column] - 1] = 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return answer;
+}
+
 int main(int argc, char *argv[]){
     int table[9][9] = {
         {0, 0, 0, 0, 0, 0, 3, 0, 6},
@@ -227,12 +293,19 @@ int main(int argc, char *argv[]){
     printTable(table);
 
     completeLineWith2Cells(table, ROW, 8);
-
     printTable(table);
 
     completeLineWith2Cells(table, COLUMN, 5);
-
     printTable(table);
+
+    completeSubTable(table, 2, 0);
+    printTable(table);
+
+    completeLineWith2Cells(table, ROW, 6);
+    completeLineWith2Cells(table, COLUMN, 8);
+    printTable(table);
+
+    printf("checkTable() returns %d.\n", checkTable(table));
 
     return 0;
 }
