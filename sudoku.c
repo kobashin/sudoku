@@ -1,12 +1,17 @@
 #include <stdio.h>
+#include <stdlib.h>
 #define ROW 0
 #define COLUMN 1
+#define VALID 1
+#define INVALID 0
 
 void printRow(int table[9][9], int rowNum);
 void printTable(int table[9][9]);
 void putCell(int *cell, int value);
 void completeLine(int table[9][9], int rowOrColumn, int num);
 void completeSubTable(int table[9][9], int subRow, int subColumn);
+int checkLineValidity(int table[9][9], int rowOrColumn, int lineNum, int num);
+int checkSubtableValidity(int table[9][9], int row, int column, int num);
 void completeLineWith2Cells(int table[9][9], int rowOrColumn, int num);
 
 // テーブルの1行を出力する
@@ -47,7 +52,7 @@ void completeLine(int table[9][9], int rowOrColumn, int num){
             // table[num][indexOfEmptyCell] = 45 - sumOfLine;
             putCell(&table[num][indexOfEmptyCell], 45 - sumOfLine);
         }
-    } else if(rowOrColumn == COLUMN){
+    } else if (rowOrColumn == COLUMN){
         for (int row = 0; row < 9; row++){
             if (table[row][num] == 0){
                 emptyCells++;
@@ -83,14 +88,55 @@ void completeSubTable(int table[9][9], int subRow, int subColumn){
     }
 }
 
+int checkLineValidity(int table[9][9], int rowOrColumn, int lineNum, int num){
+    int answer = VALID;
+    int counter;
+    
+    if (rowOrColumn == ROW){
+        for (counter = 0; counter < 9; counter++){
+            if (table[lineNum][counter] == num){
+                answer = INVALID;
+            }
+        }
+    } else if (rowOrColumn == COLUMN){
+        for (counter = 0; counter < 9; counter++){
+            if (table[counter][lineNum] == num){
+                answer = INVALID;
+            }
+        }
+    } else{
+        answer = INVALID;
+    }
+
+    return answer;
+}
+
+int checkSubtableValidity(int table[9][9], int row, int column, int num){
+    int answer = VALID;
+    int subrow;
+    int subcolumn;
+
+    for (subrow = (div(row, 3).quot * 3); subrow < (div(row, 3).quot * 3) + 3; subrow++){
+        for (subcolumn = (div(column, 3).quot * 3); subcolumn < (div(column, 3).quot * 3) + 3; subcolumn++){
+            if (table[subrow][subcolumn] == num){
+                answer == INVALID;
+            }
+        }
+    }
+
+    return answer;
+}
+
 // 1行or1列に空きセルが2つの時に値を埋める
 void completeLineWith2Cells(int table[9][9], int rowOrColumn, int num){
-    if (rowOrColumn == 0){
-        int checkEmptyValues[9] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-        int valueOfEmptyCells[2] = {-1, -1};
-        int indexOfEmptyCells[2] = {0, 0};
-        int numOfEmptyCells = 0;
-        int counter = 0;
+    
+    int checkEmptyValues[9] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    int valueOfEmptyCells[2] = {-1, -1};
+    int indexOfEmptyCells[2] = {0, 0};
+    int numOfEmptyCells = 0;
+    int counter = 0;
+    
+    if (rowOrColumn == ROW){
         for (counter = 0; counter < 9; counter++){
             if (table[num][counter] == 0){
                 indexOfEmptyCells[numOfEmptyCells] = counter;
@@ -107,28 +153,53 @@ void completeLineWith2Cells(int table[9][9], int rowOrColumn, int num){
                 numOfEmptyCells--;
             }
         }
-        
-        /*
-        // check the function
-        printf("checkEmptyValues[9] : %d %d %d %d %d %d %d %d %d \n",
-            checkEmptyValues[0],
-            checkEmptyValues[1],
-            checkEmptyValues[2],
-            checkEmptyValues[3],
-            checkEmptyValues[4],
-            checkEmptyValues[5],
-            checkEmptyValues[6],
-            checkEmptyValues[7],
-            checkEmptyValues[8]
-        );
-        */
 
         printf("valueOfEmptyCells[2] : %d %d\n", valueOfEmptyCells[0], valueOfEmptyCells[1]);
         printf("indexOfEmptyCells[2] : %d %d\n", indexOfEmptyCells[0], indexOfEmptyCells[1]);
         printf("\n");
 
-        putCell(&table[num][indexOfEmptyCells[0]], valueOfEmptyCells[0]);
-        putCell(&table[num][indexOfEmptyCells[1]], valueOfEmptyCells[1]);
+        if (checkLineValidity(table, COLUMN, indexOfEmptyCells[0], valueOfEmptyCells[0]) == INVALID || 
+            checkSubtableValidity(table, num, indexOfEmptyCells[0], valueOfEmptyCells[0]) == INVALID){
+            putCell(&table[num][indexOfEmptyCells[0]], valueOfEmptyCells[1]);
+            putCell(&table[num][indexOfEmptyCells[1]], valueOfEmptyCells[0]);
+        } else{
+            putCell(&table[num][indexOfEmptyCells[0]], valueOfEmptyCells[0]);
+            putCell(&table[num][indexOfEmptyCells[1]], valueOfEmptyCells[1]);
+        }
+
+    } else if (rowOrColumn == COLUMN){
+        for (counter = 0; counter < 9; counter++){
+            if (table[counter][num] == 0){
+                indexOfEmptyCells[numOfEmptyCells] = counter;
+                numOfEmptyCells++;
+            }
+            else{
+                checkEmptyValues[table[counter][num] - 1] = 0;
+            }
+        }
+        
+        for (counter = 0; counter < 9; counter++){
+            if (checkEmptyValues[counter] != 0){
+                valueOfEmptyCells[numOfEmptyCells - 1] = checkEmptyValues[counter];
+                numOfEmptyCells--;
+            }
+        }
+
+        printf("valueOfEmptyCells[2] : %d %d\n", valueOfEmptyCells[0], valueOfEmptyCells[1]);
+        printf("indexOfEmptyCells[2] : %d %d\n", indexOfEmptyCells[0], indexOfEmptyCells[1]);
+        printf("\n");
+
+        if (checkLineValidity(table, ROW, indexOfEmptyCells[0], valueOfEmptyCells[0]) == INVALID || 
+            checkSubtableValidity(table, num, indexOfEmptyCells[0], valueOfEmptyCells[0]) == INVALID){
+            putCell(&table[indexOfEmptyCells[0]][num], valueOfEmptyCells[1]);
+            putCell(&table[indexOfEmptyCells[1]][num], valueOfEmptyCells[0]);
+        } else{
+            putCell(&table[indexOfEmptyCells[0]][num], valueOfEmptyCells[0]);
+            putCell(&table[indexOfEmptyCells[1]][num], valueOfEmptyCells[1]);
+        }
+
+    } else{
+        printf("Invalid rowOrColumn!");
     }
 }
 
@@ -156,6 +227,10 @@ int main(int argc, char *argv[]){
     printTable(table);
 
     completeLineWith2Cells(table, ROW, 8);
+
+    printTable(table);
+
+    completeLineWith2Cells(table, COLUMN, 5);
 
     printTable(table);
 
