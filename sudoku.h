@@ -1,7 +1,11 @@
+struct tableInfo {
+    int table[9][9];
+    int candidates[9][9][9];
+};
+
 class SudokuTable{
     public:
-        int table;
-        int candidates;
+        tableInfo tableInfo;
         void getTable();
         void getCandidates();
 };
