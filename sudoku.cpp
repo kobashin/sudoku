@@ -1,25 +1,32 @@
 #include <iostream>
 using namespace std;
+#include "sudoku.h"
 
-int main(){
-    int table[9][9] = {
-        {0, 0, 0, 0, 0, 0, 3, 0, 6},
-        {1, 0, 0, 9, 0, 0, 0, 7, 8},
-        {0, 0, 0, 0, 0, 2, 0, 0, 0},
-        {8, 6, 5, 2, 7, 1, 0, 9, 3},
-        {0, 0, 0, 4, 6, 5, 7, 0, 2},
-        {0, 0, 4, 0, 9, 3, 0, 5, 0},
-        {0, 2, 8, 3, 4, 0, 1, 0, 0},
-        {3, 9, 6, 1, 5, 8, 0, 4, 7},
-        {0, 1, 7, 6, 2, 9, 8, 0, 5},
-    };
-
+void SudokuTable::getTable(){
+    /*
     for (int row = 0; row < 9; row++){
         for (int column = 0; column < 9; column++){
-            cout << table[row][column] << " ";
+            cout << this->table[row][column] << " ";
         }
         cout << "\n";
     }
+    */
+
+    cout << this->table << endl;
+}
+
+void SudokuTable::getCandidates(){
+    cout << this->candidates << endl;
+}
+
+int main(){
+    SudokuTable testTable;
+
+    testTable.table = 3;
+    testTable.candidates = 10;
+
+    testTable.getTable();
+    testTable.getCandidates();
 
     return 0;
 }
