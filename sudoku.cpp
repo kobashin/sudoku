@@ -2,6 +2,23 @@
 using namespace std;
 #include "sudoku.h"
 
+void initCandidates(int table[9][9], int candidates[9][9][9]){
+    int row;
+    int column;
+    int index;
+
+    for (row = 0; row < 9; row++){
+        for (column = 0; column < 9; column++){
+            if (table[row][column] != 0){
+                for (index = 0; index < 9; index++){
+                    if (table[row][column] != (index + 1)){
+                        candidates[row][column][index] = 0;
+                    }
+                }
+            }
+        }
+    }
+}
 
 void SudokuTable::getTable(){
     for (int row = 0; row < 9; row++){
@@ -152,7 +169,8 @@ int main(){
 
     testTable.tableInfo = tableinfo;
 
-    testTable.getTable();
+    initCandidates(testTable.tableInfo.table, testTable.tableInfo.candidates);
+
     testTable.getCandidates();
 
     return 0;
